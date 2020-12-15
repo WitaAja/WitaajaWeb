@@ -10,9 +10,16 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
+    "axios": "^0.21.0",
+    "dateformat": "^4.0.0",
+    "material-ui-dropzone": "^3.5.0",
+    "mui-image-slider": "^1.0.7",
     "next": "10.0.1",
     "react": "17.0.1",
+    "react-alice-carousel": "^2.1.0",
     "react-dom": "17.0.1",
-    "react-google-login": "^5.1.22"
+    "react-google-login": "^5.1.22",
+    "react-router-dom": "^5.2.0",
+    "react-swipeable-views": "^0.13.9"
   }
 }

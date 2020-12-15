@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import GoogleLogin from 'react-google-login';
 import { Router, useRouter } from 'next/router';
+import {login} from "../service/auth"
 
 function Copyright() {
   return (
@@ -24,11 +25,22 @@ function Copyright() {
   );
 }
 
-const responseGoogle = (response) => {
+const responseGoogle = async (response) => {
     console.log(response);
-    window.location.assign("/home");
-     
+    const user ={
+      name : response.profileObj.givenName,
+      fullname : response.profileObj.name,
+      email : response.profileObj.email,
+      foto : response.profileObj.imageUrl
+    }
+    const data = await login(user);
+    console.log("data",data)
+    if(data.token != undefined){
+      window.location.assign("/home");
+    }    
   }
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function index() {
   const classes = useStyles();
+  
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />

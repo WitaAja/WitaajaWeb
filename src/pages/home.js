@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {Paper,Drawer,Toolbar,List,Divider} from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
@@ -20,11 +20,9 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import{getAllPostings} from '../service/postings'
+
+import SwipeableImage from './components/swipeableimage';
 
 function Copyright() {
   return (
@@ -53,6 +51,10 @@ const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
+  },
+  cardPost: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   card: {
     height: '100%',
@@ -96,14 +98,24 @@ const useStyles = makeStyles((theme) => ({
   drawerContainer: {
     overflow: 'auto',
   },
+  sliderimg: {
+    width : 100,
+    height: 300 ,
+    objectFit:"cover"
+  }
 }));
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function Album() {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [posting,setPosting] = useState([]);
+  var dateFormat = require('dateformat');
+  useEffect(async () => {
+    const data = await getAllPostings(); 
+    setPosting(data.data.data);
+  },[]);
 
+  console.log("---->",posting)
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -121,12 +133,13 @@ export default function Album() {
             <Grid Container xs={12} sm ={3} >        
             </Grid>
             <Grid Container xs={12} sm ={8}>
-            {cards.map((card) => (
-              <Grid  className={classes.root} spacing={4}>
+            {posting.map((card) => ( 
+              <div className={classes.cardPost}>
+              <Paper elevation={3}>
+              <Grid  className={classes.root} spacing={4} key={card.id}>
               <CardHeader
                 avatar={
-                  <Avatar aria-label="recipe" className={classes.avatar}>
-                    R
+                  <Avatar aria-label="recipe" className={classes.avatar} src={card.user.foto}>                  
                   </Avatar>
                 }
                 action={
@@ -134,18 +147,13 @@ export default function Album() {
                     <MoreVertIcon />
                   </IconButton>
                 }
-                title="Shrimp and Chorizo Paella"
-                subheader="September 14, 2016"
+                title={card.user.name}
+                subheader={dateFormat(card.createdAt,"dddd, mmmm dS, yyyy, h:MM:ss TT")}
               />
-              <CardMedia
-                className={classes.media}
-                image='https://cdn.rentalmobilbali.net/wp-content/uploads/2016/05/10-Tempat-Wisata-Favorit-Wisatawan-Indonesia-Di-Bali-Unggulan.jpg'
-                title="Paella dish"
-              />
+              <SwipeableImage image ={card.imageposts}/>             
               <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  This impressive paella is a perfect party dish and a fun meal to cook together with your
-                  guests. Add 1 cup of frozen peas along with the mussels, if you like.
+                  {card.description}
                 </Typography>
               </CardContent>
               <CardActions disableSpacing>
@@ -194,6 +202,8 @@ export default function Album() {
                 </CardContent>
               </Collapse>
             </Grid>
+            </Paper>
+            </div>
             ))}
             </Grid>
             
